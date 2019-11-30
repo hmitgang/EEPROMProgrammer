@@ -4,6 +4,8 @@ import RPi.GPIO as GPIO
 import sys, time
 
 GPIO.setmode(GPIO.BCM) #Use chip numbering scheme
+GPIO.setwarnings(False)
+
 
 CE = 2
 OE = 3
@@ -36,14 +38,15 @@ for pin in addressPins:
 
 
 def setAddress(address):
+	"""Sets GPIO pins to an address"""
 	# Least significant digit first (i.e. A0 is least significant)
 	for pin in addressPins:
-		# GPIO.output(pin, address & 1)
-		# print(address & 1)
+		GPIO.output(pin, address & 1)
 		address = address >> 1
 	
 
 def writeByte(address, data):
+	"""Writes byte data at address"""
 	GPIO.output(OE, HIGH)
 
 	# Set up data pins
@@ -57,11 +60,14 @@ def writeByte(address, data):
 		data = data >> 1
 
 	GPIO.output(WE, LOW)
-	time.delay(1e-6)
+	time.sleep(1e-6)
 	GPIO.output(WE, HIGH)
-	time.delay(.001)
+	time.sleep(.001)
 
 def readByte(address):
+	"""Read byte at an address
+	Returns the data at that address as int"""
+
 	GPIO.output(OE, LOW)
 	# Set up data pins
 	for pin in dataPins:
@@ -77,34 +83,36 @@ def readByte(address):
 
 
 def progressbar(it, prefix="", size=60, file=sys.stdout):
-    count = len(it)
-    def show(j):
-        x = int(size*j/count)
-        file.write("%s[%s%s] 0x%04x/0x%04x\r" % (prefix, "#"*x, "."*(size-x), j, count))
-        file.flush()        
-    show(0)
-    for i, item in enumerate(it):
-        yield item
-        show(i+1)
-    file.write("\n")
-    file.flush()
+	"""Progress bar used as iterable"""
+	
+	count = len(it)
+	def show(j):
+		x = int(size*j/count)
+		file.write("%s[%s%s] 0x%04x/0x%04x\r" % (prefix, "#"*x, "."*(size-x), j, count))
+		file.flush()        
+	show(0)
+	for i, item in enumerate(it):
+		yield item
+		show(i+1)
+	file.write("\n")
+	file.flush()
 
+if __name__=="__main__":
+	if len(sys.argv) == 2:
+		print("Writing",sys.argv[1], "to EEPROM...")
+		with open(sys.argv[1], "rb") as inFile:
+			for address, byte in enumerate(progressbar(inFile.read(), "Writing: ", 40)):
+				# print("Address: "+"{0:#0{1}x}".format(address,6), "Data: "+"{0:#0{1}x}".format(byte,2))
+				writeByte(address, byte)
+		print("Complete!")
+	else:
+		readSize = int(input("Input read size (32768): "))
+		for base in range(0, readSize, 16):
+			data = []
+			for offset in range(16):
+				data += [hex(readByte(base + offset))]
 
-if len(sys.argv) == 2:
-	print("Writing",sys.argv[1], "to EEPROM...")
-	with open(sys.argv[1], "rb") as inFile:
-		for address, byte in enumerate(progressbar(inFile.read(), "Writing: ", 40)):
-			# print("Address: "+"{0:#0{1}x}".format(address,6), "Data: "+"{0:#0{1}x}".format(byte,2))
-			writeByte(address, byte)
-	print("Complete!")
-else:
-	readSize = int(input("Input read size (32768): "))
-	for base in range(0, 32768, 16):
-		data = []
-		for offset in range(16):
-			data += [hex(readByte(address))]
-
-		print("Addr 0x" + hex(base) + ": " + " ".join(data))
+			print("Addr 0x" + hex(base) + ": " + " ".join(data))
 
 
 GPIO.cleanup()

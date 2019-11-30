@@ -12,8 +12,8 @@ LOW  = 0
 HIGH = 1
 
 # Setup CE, OE, and WE
-GPIO.setup(CE, GPIO.OUT, pull_up_down = GPIO.PUD_DOWN)
-GPIO.setup(OE, GPIO.OUT, pull_up_down = GPIO.PUD_DOWN)
+GPIO.setup(CE, GPIO.OUT)
+GPIO.setup(OE, GPIO.OUT)
 
 
 # [A0, A1,..., A12, A13, A14]
@@ -27,12 +27,12 @@ dataPins = [14, 15, 18, 17, 27, 22, 23, 24]
 GPIO.output(CE, HIGH) #CE - high -- Active LOW
 GPIO.output(OE, HIGH) #OE - high -- SHOULD ALWAYS HIGH FOR WRITE
 GPIO.output(WE, HIGH) #WE - high
-GPIO.setup(WE, GPIO.OUT, pull_up_down = GPIO.PUD_DOWN)
+GPIO.setup(WE, GPIO.OUT)
 
 
 # Set up address pin modes
 for pin in addressPins:
-	GPIO.setup(pin, GPIO.OUT, pull_up_down = GPIO.PUD_DOWN)
+	GPIO.setup(pin, GPIO.OUT)
 
 
 def setAddress(address):
@@ -48,7 +48,7 @@ def writeByte(address, data):
 
 	# Set up data pins
 	for pin in dataPins:
-		GPIO.setup(pin, GPIO.OUT, pull_up_down = GPIO.PUD_DOWN)
+		GPIO.setup(pin, GPIO.OUT)
 
 	setAddress(address)
 	# Least significant digit first (i.e. D0 is least significant)
@@ -65,7 +65,7 @@ def readByte(address):
 	GPIO.output(OE, LOW)
 	# Set up data pins
 	for pin in dataPins:
-		GPIO.setup(pin, GPIO.IN)
+		GPIO.setup(pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 
 	data = 0
 	# Least significant digit first (i.e. D0 is least significant)
@@ -107,5 +107,5 @@ else:
 		print("Addr 0x" + hex(base) + ": " + " ".join(data))
 
 
-
+GPIO.cleanup()
 

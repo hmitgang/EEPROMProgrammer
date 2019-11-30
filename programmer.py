@@ -14,6 +14,7 @@ HIGH = 1
 # Setup CE, OE, and WE
 GPIO.setup(CE, GPIO.OUT)
 GPIO.setup(OE, GPIO.OUT)
+GPIO.setup(WE, GPIO.OUT)
 
 
 # [A0, A1,..., A12, A13, A14]
@@ -27,7 +28,6 @@ dataPins = [14, 15, 18, 17, 27, 22, 23, 24]
 GPIO.output(CE, HIGH) #CE - high -- Active LOW
 GPIO.output(OE, HIGH) #OE - high -- SHOULD ALWAYS HIGH FOR WRITE
 GPIO.output(WE, HIGH) #WE - high
-GPIO.setup(WE, GPIO.OUT)
 
 
 # Set up address pin modes

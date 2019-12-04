@@ -14,9 +14,9 @@ LOW  = 0
 HIGH = 1
 
 # Setup CE, OE, and WE
-GPIO.setup(CE, GPIO.OUT, inital=HIGH)
-GPIO.setup(OE, GPIO.OUT, inital=HIGH)
-GPIO.setup(WE, GPIO.OUT, inital=HIGH)
+GPIO.setup(CE, GPIO.OUT, initial=HIGH)
+GPIO.setup(OE, GPIO.OUT, initial=HIGH)
+GPIO.setup(WE, GPIO.OUT, initial=HIGH)
 
 
 # [A0, A1,..., A12, A13, A14]

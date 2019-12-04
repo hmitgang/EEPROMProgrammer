@@ -18,6 +18,7 @@ dataPins = [14, 15, 18, 17, 27, 22, 23, 24]
 
 
 def setup():
+	"""Setup GPIO modes"""
 	GPIO.setmode(GPIO.BCM) #Use chip numbering scheme
 	GPIO.setwarnings(False)
 
@@ -37,10 +38,17 @@ def setup():
 
 	# Set up address pin modes
 	GPIO.setup(addressPins, GPIO.OUT) # Set all address pins to output
+	print("Setup. Ready to begin.")
+
+def cleanup():
+	"""Cleanup after use."""
+	GPIO.cleanup()
+	print("Cleaned up. Ready to end.")
 
 
 def setAddress(address):
-	"""Sets GPIO pins to an address"""
+	"""Sets GPIO pins to an address
+	-- Address"""
 	# Least significant digit first (i.e. A0 is least significant)
 	for pin in addressPins:
 		GPIO.output(pin, address & 1)
@@ -48,7 +56,9 @@ def setAddress(address):
 	
 
 def writeByte(address, data):
-	"""Writes byte data at address"""
+	"""Writes byte data at address
+	-- Address
+	-- Data"""
 	GPIO.output(OE, HIGH)
 
 	# Set up data pins
@@ -67,7 +77,8 @@ def writeByte(address, data):
 
 def readByte(address):
 	"""Read byte at an address
-	Returns the data at that address as int"""
+	Returns the data at that address as int
+	-- Address"""
 
 	GPIO.output(OE, LOW)
 	# Set up data pins
@@ -107,14 +118,32 @@ if __name__=="__main__":
 				writeByte(address, byte)
 		print("Complete!")
 	else:
-		readSize = int(input("Input read size (32768): "))
+		readSize = input("Input read size decimal or hex 0x00 (default 32768): ")
+		fileName = input("Input file name (leave blank for None): ")
+
+		if 'x' in readSize: # If hexidecimal
+			readSize = int(readSize, 16)
+		else if readSize: # If Decimal
+			readSize = int(readSize)
+		else: # If blank
+			readSize = 32768
+
+		if fileName:
+			outputFile = open(fileName, 'wb')
+		
 		for base in range(0, readSize, 16):
 			data = []
 			for offset in range(16):
-				data += [hex(readByte(base + offset))]
+				data += [readByte(base + offset)]
 
-			print("Addr 0x" + hex(base) + ": " + " ".join(data))
+			if fileName:
+				outputFile.write(bytes(data)) # Write to file
+
+			
+			print("Addr " + hex(base) + ": " + " ".join([ hex(byte) for byte in data ])) # Write to console
+
+		if fileName:
+			outputFile.close()
 
 
-	GPIO.cleanup()
-
+	cleanup()

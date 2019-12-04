@@ -3,37 +3,38 @@
 import RPi.GPIO as GPIO
 import sys, time
 
-GPIO.setmode(GPIO.BCM) #Use chip numbering scheme
-GPIO.setwarnings(False)
+def setup():
+	GPIO.setmode(GPIO.BCM) #Use chip numbering scheme
+	GPIO.setwarnings(False)
 
 
-CE = 2
-OE = 3
-WE = 4
-LOW  = 0
-HIGH = 1
+	CE = 2
+	OE = 3
+	WE = 4
+	LOW  = 0
+	HIGH = 1
 
-# Setup CE, OE, and WE
-GPIO.setup(CE, GPIO.OUT, initial=HIGH)
-GPIO.setup(OE, GPIO.OUT, initial=HIGH)
-GPIO.setup(WE, GPIO.OUT, initial=HIGH)
-
-
-# [A0, A1,..., A12, A13, A14]
-addressPins = [10, 9, 11, 25, 8, 7, 5, 6, 12, 13, 19, 26, 16, 20, 21]
-
-# [D0, D1, D2, D3, D4, D5, D6, D7]
-dataPins = [14, 15, 18, 17, 27, 22, 23, 24]
+	# Setup CE, OE, and WE
+	GPIO.setup(CE, GPIO.OUT, initial=HIGH)
+	GPIO.setup(OE, GPIO.OUT, initial=HIGH)
+	GPIO.setup(WE, GPIO.OUT, initial=HIGH)
 
 
-#Set the chip in standby mode while setting up the rest GPIO:
-GPIO.output(CE, HIGH) #CE - high -- Active LOW
-GPIO.output(OE, HIGH) #OE - high -- SHOULD ALWAYS HIGH FOR WRITE
-GPIO.output(WE, HIGH) #WE - high
+	# [A0, A1,..., A12, A13, A14]
+	addressPins = [10, 9, 11, 25, 8, 7, 5, 6, 12, 13, 19, 26, 16, 20, 21]
+
+	# [D0, D1, D2, D3, D4, D5, D6, D7]
+	dataPins = [14, 15, 18, 17, 27, 22, 23, 24]
 
 
-# Set up address pin modes
-GPIO.setup(addressPins, GPIO.OUT) # Set all address pins to output
+	#Set the chip in standby mode while setting up the rest GPIO:
+	GPIO.output(CE, HIGH) #CE - high -- Active LOW
+	GPIO.output(OE, HIGH) #OE - high -- SHOULD ALWAYS HIGH FOR WRITE
+	GPIO.output(WE, HIGH) #WE - high
+
+
+	# Set up address pin modes
+	GPIO.setup(addressPins, GPIO.OUT) # Set all address pins to output
 
 
 def setAddress(address):
@@ -95,6 +96,7 @@ def progressbar(it, prefix="", size=60, file=sys.stdout):
 	file.flush()
 
 if __name__=="__main__":
+	setup()
 	if len(sys.argv) == 2:
 		print("Writing",sys.argv[1], "to EEPROM...")
 		with open(sys.argv[1], "rb") as inFile:
@@ -112,5 +114,5 @@ if __name__=="__main__":
 			print("Addr 0x" + hex(base) + ": " + " ".join(data))
 
 
-GPIO.cleanup()
+	GPIO.cleanup()
 

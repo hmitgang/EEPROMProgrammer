@@ -37,6 +37,7 @@ def setup():
 	# Set all address pins to output
 	GPIO.setup(addressPins, GPIO.OUT)
 	print("Setup. Ready to begin.")
+	GPIO.output(CE, LOW)
 
 
 def cleanup():

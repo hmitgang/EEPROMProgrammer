@@ -141,7 +141,7 @@ if __name__=="__main__":
 
 		if 'x' in readSize: # If hexidecimal
 			readSize = int(readSize, 16)
-		else if readSize: # If Decimal
+		elif readSize: # If Decimal
 			readSize = int(readSize)
 		else: # If blank
 			readSize = 32768

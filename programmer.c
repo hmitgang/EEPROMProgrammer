@@ -82,7 +82,7 @@ void writeByte(int address, uint8_t byte){
 	digitalWrite(WE_PIN, LOW);
 	delayMicroseconds(1);
 	digitalWrite(WE_PIN, HIGH);
-	delay(10);
+	delay(1);
 
 }
 

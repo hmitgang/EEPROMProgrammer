@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <wiringPi.h>
 #include <stdint.h>
-#include <time.h>
 
 #define CE_PIN 8 // 2
 #define OE_PIN 9 // 3
@@ -56,9 +55,7 @@ int main(int argc, char const *argv[])
 	binFile = fopen("rom.bin","rb");
 	
 	digitalWrite(CE_PIN, LOW); // Enable chip
-
-	clock_t begin = clock();
-
+	printf("Starting...\n");
 	delay(10);
 
 	while(fscanf(binFile, "%c", &curByte)==1){
@@ -68,8 +65,8 @@ int main(int argc, char const *argv[])
 	}
 	
 	fclose(binFile);
-	clock_t end = clock();
-	printf("Finished in %f seconds.\n", (double)(end - begin) / CLOCKS_PER_SEC);
+	
+	printf("Finished writing %d addresses.\n", address);
 	return 0;
 }
 
@@ -85,7 +82,7 @@ void writeByte(int address, uint8_t byte){
 	digitalWrite(WE_PIN, LOW);
 	delayMicroseconds(1);
 	digitalWrite(WE_PIN, HIGH);
-	delay(1);
+	delay(10);
 
 }
 

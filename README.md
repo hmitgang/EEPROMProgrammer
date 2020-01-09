@@ -5,6 +5,8 @@ Usage:
 
 For reading `python3 programmer.py`
 
-For writing a binary file `python3 programmer.py <filename>`
+To compile the c file, run `gcc -Wall -o programmer programmer.c -lwiringPi`
 
-For creating binary file edit makerom.py, then run `python3 makerom.py`
+For writing a binary file `./programmer <filename>`
+
+For creating binary file edit `makerom.py`, then run `python3 makerom.py`

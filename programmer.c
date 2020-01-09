@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <wiringPi.h>
+#include <stdint.h>
 
 #define CE_PIN 8 // 2
 #define OE_PIN 9 // 3
@@ -28,19 +29,21 @@ int main(int argc, char const *argv[])
 
 	wiringPiSetup();
 
-	pinMode(CE, OUTPUT);
-	digitalWrite(CE, HIGH); // Active low	
-	pinMode(OE, OUTPUT);
-	digitalWrite(OE, HIGH); // Active low
-	pinMode(WE, OUTPUT);
-	digitalWrite(WE, HIGH); // Active low
+	pinMode(CE_PIN, OUTPUT);
+	digitalWrite(CE_PIN, HIGH); // Active low	
+	pinMode(OE_PIN, OUTPUT);
+	digitalWrite(OE_PIN, HIGH); // Active low
+	pinMode(WE_PIN, OUTPUT);
+	digitalWrite(WE_PIN, HIGH); // Active low
 
-	for(uint8_t pin: addressPins){
+	for(int i=0; i<15; i++){
+		pin = addressPins[i];
 		pinMode(pin, OUTPUT);
 		digitalWrite(pin, LOW);
 	}
 
-	for(uint8_t pin: dataPins){
+	for(int i=0; i<8; i++){
+		pin = dataPins[i];
 		pinMode(pin, OUTPUT);
 	}
 
@@ -50,11 +53,11 @@ int main(int argc, char const *argv[])
 
 	binFile = fopen("rom.bin","rb");
 	
-	digitalWrite(CE, LOW) // Enable chip
+	digitalWrite(CE_PIN, LOW); // Enable chip
 
 	while(fscanf(binFile, "%c", &curByte)==1){
 		printf("0x%04x  0x%02x\n", address, curByte);
-		writeByte(address, curByte)
+		writeByte(address, curByte);
 		address++;
 	}
 	
@@ -67,19 +70,20 @@ void writeByte(int address, uint8_t byte){
 	setAddress(address);
 	for(uint8_t pin: dataPins) {
 		digitalWrite(pin, byte & 1);
-		byte = byte >> 1
+		byte = byte >> 1;
 	}
 
-	digitalWrite(WE, LOW);
+	digitalWrite(WE_PIN, LOW);
 	delayMicroseconds(1);
-	digitalWrite(WE, HIGH);
+	digitalWrite(WE_PIN, HIGH);
 	delay(10);
 
 }
 
 void setAddress(int address){
-	for(uint8_t pin: addressPins){
+	for(int i=0; i<15; i++){
+		pin = addressPins[i];
 		digitalWrite(pin, address & 1);
-		address = address >> 1
+		address = address >> 1;
 	}
 }

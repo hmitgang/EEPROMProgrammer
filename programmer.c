@@ -68,7 +68,8 @@ int main(int argc, char const *argv[])
 
 void writeByte(int address, uint8_t byte){
 	setAddress(address);
-	for(uint8_t pin: dataPins) {
+	for(int i=0; i<8; i++){
+		uint8_t pin = dataPins[i];
 		digitalWrite(pin, byte & 1);
 		byte = byte >> 1;
 	}

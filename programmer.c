@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <wiringPi.h>
 #include <stdint.h>
+#include <time.h>
 
 #define CE_PIN 8 // 2
 #define OE_PIN 9 // 3
@@ -56,6 +57,8 @@ int main(int argc, char const *argv[])
 	
 	digitalWrite(CE_PIN, LOW); // Enable chip
 
+	clock_t begin = clock();
+
 	delay(10);
 
 	while(fscanf(binFile, "%c", &curByte)==1){
@@ -65,8 +68,8 @@ int main(int argc, char const *argv[])
 	}
 	
 	fclose(binFile);
-
-	printf("Finished in %f seconds.\n", 0.001 * millis)
+	clock_t end = clock();
+	printf("Finished in %f seconds.\n", (double)(end - begin) / CLOCKS_PER_SEC);
 	return 0;
 }
 

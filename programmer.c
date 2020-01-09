@@ -24,8 +24,9 @@ int main(int argc, char const *argv[])
 		printf("Enter a binary file to write.\n");
 		return 1;
 	}
+	char dummy;
 	printf("Ensure 5V connected, then hit return.");
-	scanf("%c");
+	scanf("%c", &dummy);
 
 	wiringPiSetup();
 
@@ -55,19 +56,23 @@ int main(int argc, char const *argv[])
 	
 	digitalWrite(CE_PIN, LOW); // Enable chip
 
+	delay(10);
+
 	while(fscanf(binFile, "%c", &curByte)==1){
-		printf("0x%04x  0x%02x\n", address, curByte);
+		// printf("0x%04x  0x%02x\n", address, curByte);
 		writeByte(address, curByte);
 		address++;
 	}
 	
 	fclose(binFile);
 
+	printf("Finished in %f seconds.\n", 0.001 * millis)
 	return 0;
 }
 
 void writeByte(int address, uint8_t byte){
 	setAddress(address);
+
 	for(int i=0; i<8; i++){
 		uint8_t pin = dataPins[i];
 		digitalWrite(pin, byte & 1);

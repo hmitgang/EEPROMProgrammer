@@ -94,6 +94,8 @@ def readByte(address):
 	# Set up data pins
 	GPIO.setup(dataPins, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 
+	setAddress(address)
+
 	data = 0
 	# Most significant digit first as dataPins is reversed
 	for pin in dataPins[::-1]:

@@ -37,13 +37,13 @@ int main(int argc, char const *argv[])
 	digitalWrite(WE_PIN, HIGH); // Active low
 
 	for(int i=0; i<15; i++){
-		pin = addressPins[i];
+		uint8_t pin = addressPins[i];
 		pinMode(pin, OUTPUT);
 		digitalWrite(pin, LOW);
 	}
 
 	for(int i=0; i<8; i++){
-		pin = dataPins[i];
+		uint8_t pin = dataPins[i];
 		pinMode(pin, OUTPUT);
 	}
 
@@ -82,7 +82,7 @@ void writeByte(int address, uint8_t byte){
 
 void setAddress(int address){
 	for(int i=0; i<15; i++){
-		pin = addressPins[i];
+		uint8_t pin = addressPins[i];
 		digitalWrite(pin, address & 1);
 		address = address >> 1;
 	}
